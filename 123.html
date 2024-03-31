@@ -1,1 +1,68 @@
+<html>
+<head>
+    <title>Robot | Kontrol Paneli</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("button[name='yon']").click(function(){
+                var yon = $(this).val();
+                $.post("buton_islem.php", {yon: yon}, function(data){
+                    alert(data); // İşlem sonucunu göstermek için bir uyarı kutusu
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+        <?php
+          $komut  = $_GET['islem'];
+        // Veritabanı bağlantısı
+$serverName = "Volkan\SQLEXPRESS";
+$database = "depotakip";
+$uid = "volkan";
+$pass = "vokki2444";
+$connectionInfo = [ 
+    "Database" => $database,
+    "UID" => $uid,
+    "PWD" => $pass
+];
+$conn = sqlsrv_connect($serverName, $connectionInfo);
+if (!$conn) {
+    die(print_r(sqlsrv_errors(), true));
 
+}
+else         echo 'baglandi' ;
+
+
+// Butondan gelen veriyi al ve veritabanına kaydet
+
+    // Veritabanına komut adında bir tabloya veri ekle
+    $sql = "INSERT INTO KomutlarTablosu (komut, durum) VALUES ('$komut', '1')";
+    
+    $stmt = sqlsrv_query($conn, $sql);
+    if ($stmt === false) {
+        die(print_r(sqlsrv_errors(), true));
+    }
+    else {
+        echo $komut;
+    }
+
+    // Başarılı mesajı göster
+    echo "Butona basıldığında veritabanına komut adında bir tabloya veri eklendi.";
+
+
+// Veritabanı bağlantısını kapat
+sqlsrv_close($conn);
+        ?>
+    <center>
+        <h1>Tam Otomatik Taşıma Robotu</h1>
+        <input onclick="location.href='index.php?islem=ileri';" type="submit" value="Ileri" style="width:100px; height:100px; margin-top:150px; margin-bottom:10px; font-size:40px; font-family:Arial;" wfd-value="4pay">
+        <br>
+        <input onclick="location.href='index.php?islem=sol';" type="submit" value="Sol" style="width:100px; height:100px; font-size:40px; font-family:Arial;" wfd-value="4peE">
+        <input onclick="location.href='index.php?islem=dur';" type="submit" value="0" style="width:100px; height:100px; margin-left:20px; font-size:40px; font-family:Arial;" wfd-value="MA==">
+        <input onclick="location.href='index.php?islem=sag';" type="submit" value="Sag" style="width:100px; height:100px; margin-left:20px; font-size:40px; font-family:Arial;" wfd-value="4pa6">
+        <br>
+        <input onclick="location.href='index.php?islem=geri';" type="submit" value="Geri" style="width:100px; height:100px; margin-top:10px; font-size:40px; font-family:Arial;" wfd-value="4pa8">
+    </center> 
+</body>
+</html>
